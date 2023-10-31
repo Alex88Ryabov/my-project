@@ -1,0 +1,11 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "singleQuote": true,
+  "bracketSpacing": false,
+  "bracketSameLine": true,
+  "overrides": [
+    { "files": "*.html", "options": { "printWidth": 180 } },
+    { "files": "*.ts", "options": { "printWidth": 180 } }
+  ]
+}

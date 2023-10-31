@@ -1,17 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-recipes',
   templateUrl: './recipes.component.html',
-  styleUrls: ['./recipes.component.scss']
+  styleUrls: ['./recipes.component.scss'],
 })
-export class RecipesComponent implements OnInit {
-  private subscription$: Subscription;
-
-  constructor() {
-  }
-
-  public ngOnInit(): void {
-  }
-}
+export class RecipesComponent {}

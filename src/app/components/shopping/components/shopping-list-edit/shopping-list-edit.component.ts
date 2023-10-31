@@ -1,22 +1,21 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {ShoppingService} from "../../shopping.service";
 import {NgForm} from "@angular/forms";
-import {IngredientModel} from "../../../../models/ingredient.model";
-import {Subscription} from "rxjs";
+import {IngredientModel} from "../../../../shared/models/ingredient.model";
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 
-// @ts-ignore
+@UntilDestroy()
 @Component({
   selector: 'app-shopping-list-edit',
   templateUrl: './shopping-list-edit.component.html',
   styleUrls: ['./shopping-list-edit.component.scss']
 })
-export class ShoppingListEditComponent implements OnInit, OnDestroy {
+export class ShoppingListEditComponent implements OnInit {
   @ViewChild('shopEditForm') shopEditForm: NgForm;
   @Output() ingredientAdded: EventEmitter<{ name: string, amount: number }> = new EventEmitter<{
     name: string,
     amount: number
   }>();
-  private subscription$: Subscription;
   public editMode: boolean = false;
   public editedItemIndex: number;
   public editedItem: IngredientModel;
@@ -26,7 +25,9 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    this.subscription$ = this.shoppingService.startedEditing$.subscribe((index: number) => {
+    this.shoppingService.startedEditing$
+      .pipe(untilDestroyed(this))
+      .subscribe((index: number) => {
       this.editedItemIndex = index;
       this.editMode = true;
       this.editedItem = this.shoppingService.getIngredient(index);
@@ -35,10 +36,6 @@ export class ShoppingListEditComponent implements OnInit, OnDestroy {
         amount: this.editedItem.amount,
       })
     })
-  }
-
-  public ngOnDestroy() {
-    this.subscription$.unsubscribe();
   }
 
   public onSubmit(form: NgForm): void {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {IngredientModel} from "../../models/ingredient.model";
+import {IngredientModel} from "../../shared/models/ingredient.model";
 import {Subject} from "rxjs";
 
 @Injectable({
@@ -12,9 +12,6 @@ export class ShoppingService {
     new IngredientModel('Apples', 5),
     new IngredientModel('Tomatoes', 10)
   ];
-
-  constructor() {
-  }
 
   public get getIngredients(): IngredientModel[] {
     return this.ingredients.slice();
@@ -29,7 +26,7 @@ export class ShoppingService {
     this.ingredientsChanged$.next(this.ingredients.slice());
   }
 
-  public set addIngredients(ingredients: IngredientModel[]) {
+  public addIngredients(ingredients: IngredientModel[]): void {
     this.ingredients.push(...ingredients);
     this.ingredientsChanged$.next(this.ingredients.slice());
   }

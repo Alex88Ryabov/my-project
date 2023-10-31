@@ -1,28 +1,28 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {IngredientModel} from "../../../../models/ingredient.model";
+import {Component, OnInit} from '@angular/core';
+import {IngredientModel} from "../../../../shared/models/ingredient.model";
 import {ShoppingService} from "../../shopping.service";
-import {Subscription} from "rxjs";
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
+import {LoggingService} from "../../../../logging.service";
 
+@UntilDestroy()
 @Component({
   selector: 'app-shopping-list',
   templateUrl: './shopping-list.component.html',
   styleUrls: ['./shopping-list.component.scss']
 })
-export class ShoppingListComponent implements OnInit, OnDestroy {
+export class ShoppingListComponent implements OnInit {
   public ingredients: IngredientModel[];
-  private subscription$: Subscription;
 
-  constructor(private shoppingService: ShoppingService) {
+  constructor(private shoppingService: ShoppingService, private loggingService: LoggingService) {
   }
 
   public ngOnInit(): void {
     this.ingredients = this.shoppingService.getIngredients;
-    this.subscription$ = this.shoppingService.ingredientsChanged$
+    this.shoppingService.ingredientsChanged$
+      .pipe(untilDestroyed(this))
       .subscribe((ingredients: IngredientModel[]) => this.ingredients = ingredients);
-  }
 
-  public ngOnDestroy(): void {
-    this.subscription$.unsubscribe();
+    this.loggingService.printLog('Hello from ShoppingListComponent');
   }
 
 
