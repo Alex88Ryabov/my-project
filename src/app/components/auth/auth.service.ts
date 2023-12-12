@@ -43,7 +43,9 @@ export class AuthService {
   public logout(): void {
     this.user$.next(null);
     this.router.navigate(['/auth']).finally();
-    localStorage.removeItem('userData');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('userData');
+    }
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -57,12 +59,13 @@ export class AuthService {
   }
 
   autoLogin(): void {
-    const userData: {
-      email: string;
-      id: string;
-      _token: string;
-      _tokenExpiration: string;
-    } = JSON.parse(localStorage.getItem('userData'));
+    if (typeof localStorage !== 'undefined') {
+      const userData: {
+        email: string;
+        id: string;
+        _token: string;
+        _tokenExpiration: string;
+      } = JSON.parse(localStorage.getItem('userData'));
     if (!userData) {
       return;
     }
@@ -75,6 +78,7 @@ export class AuthService {
       const expirationDuration = new Date(userData._tokenExpiration).getTime() - new Date().getTime();
       this.autoLogout(expirationDuration);
     }
+    }
   }
 
   private handleAuthentication(email: string, userId: string, token: string, expiresIn: number): void {
@@ -83,8 +87,9 @@ export class AuthService {
 
     this.user$.next(user);
     this.autoLogout(expiresIn * 1000);
-
-    localStorage.setItem('userData', JSON.stringify(user));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('userData', JSON.stringify(user));
+    }
   }
 
   private handleError(errorRes: HttpErrorResponse) {

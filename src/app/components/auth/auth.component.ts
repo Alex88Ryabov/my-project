@@ -73,4 +73,12 @@ export class AuthComponent {
       hostViewContainerRef.clear();
     });
   }
+
+  onFileChange(event) {
+     const file = event.target.files[0];
+
+     if (file) {
+       console.log(file);
+     }
+  }
 }
